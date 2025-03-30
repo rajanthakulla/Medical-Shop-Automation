@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Management - Medical Shop Automation Software</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <h1>MedShop</h1>
+                </div>
+                <div class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="inventory.html">Inventory</a></li>
+                    <li><a href="sales.html" class="active">Sales</a></li>
+                    <li><a href="prescriptions.html">Prescriptions</a></li>
+                    <li><a href="suppliers.html">Suppliers</a></li>
+                    <li><a href="reports.html">Reports</a></li>
+                </ul>
+                <div class="user-actions">
+                    <div class="user-profile">
+                        <img src="/api/placeholder/40/40" alt="User Profile">
+                        <span>Pharmacist</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="sales-main">
+        <div class="container">
+            <div class="sales-header">
+                <h2><i class="fas fa-cash-register"></i> Sales Management</h2>
+                <div class="sales-actions">
+                    <button class="btn primary-btn" id="newSaleBtn">
+                        <i class="fas fa-plus"></i> New Sale
+                    </button>
+                    <button class="btn secondary-btn" id="exportBtn">
+                        <i class="fas fa-file-export"></i> Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sales Filters -->
+            <div class="sales-filters">
+                <div class="filter-group">
+                    <label for="searchSale">Search:</label>
+                    <div class="input-group">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchSale" placeholder="Search by invoice, customer or medicine">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label for="dateFilter">Date Range:</label>
+                    <input type="date" id="dateFrom">
+                    <span>to</span>
+                    <input type="date" id="dateTo">
+                </div>
+                <div class="filter-group">
+                    <label for="paymentFilter">Payment Method:</label>
+                    <select id="paymentFilter">
+                        <option value="">All Methods</option>
+                        <option value="cash">Cash</option>
+                        <option value="card">Card</option>
+                        <option value="online">Online</option>
+                    </select>
+                </div>
+                <button class="btn primary-btn" id="applyFiltersBtn">Apply Filters</button>
+                <button class="btn secondary-btn" id="resetFiltersBtn">Reset</button>
+            </div>
+
+            <!-- Sales Summary Cards -->
+            <div class="sales-summary">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Today's Sales</h3>
+                        <p class="count" id="todaySales">0</p>
+                        <p class="subtext">₹<span id="todayAmount">0.00</span></p>
+                    </div>
+                </div>
+                <div class="summary-card success">
+                    <div class="summary-icon">
+                        <i class="fas fa-calendar-week"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>This Week</h3>
+                        <p class="count" id="weekSales">0</p>
+                        <p class="subtext">₹<span id="weekAmount">0.00</span></p>
+                    </div>
+                </div>
+                <div class="summary-card primary">
+                    <div class="summary-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>This Month</h3>
+                        <p class="count" id="monthSales">0</p>
+                        <p class="subtext">₹<span id="monthAmount">0.00</span></p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Total Sales</h3>
+                        <p class="count" id="totalSales">0</p>
+                        <p class="subtext">₹<span id="totalAmount">0.00</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales Table -->
+            <div class="sales-table-container">
+                <table id="salesTable" class="display">
+                    <thead>
+                        <tr>
+                            <th>Invoice No.</th>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Items</th>
+                            <th>Total (₹)</th>
+                            <th>Payment Method</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salesTableBody">
+                        <!-- Data will be loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- New Sale Modal -->
+    <div class="modal" id="newSaleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>New Sale</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="saleForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customerName">Customer Name</label>
+                            <input type="text" id="customerName" placeholder="Enter customer name">
+                        </div>
+                        <div class="form-group">
+                            <label for="customerPhone">Phone Number</label>
+                            <input type="tel" id="customerPhone" placeholder="Enter phone number">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="paymentMethod">Payment Method</label>
+                        <select id="paymentMethod">
+                            <option value="cash">Cash</option>
+                            <option value="card">Card</option>
+                            <option value="online">Online Payment</option>
+                        </select>
+                    </div>
+                    
+                    <div class="sale-items">
+                        <h4>Items</h4>
+                        <div class="items-header">
+                            <span>Medicine</span>
+                            <span>Price</span>
+                            <span>Qty</span>
+                            <span>Total</span>
+                            <span>Action</span>
+                        </div>
+                        <div id="saleItemsContainer">
+                            <!-- Sale items will be added here -->
+                        </div>
+                        <button type="button" class="btn secondary-btn" id="addItemBtn">
+                            <i class="fas fa-plus"></i> Add Item
+                        </button>
+                    </div>
+                    
+                    <div class="sale-summary">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span>₹<span id="subtotal">0.00</span></span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tax (5%):</span>
+                            <span>₹<span id="tax">0.00</span></span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span>₹<span id="total">0.00</span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn secondary-btn close-modal">Cancel</button>
+                        <button type="submit" class="btn primary-btn">Complete Sale</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Sale Modal -->
+    <div class="modal" id="viewSaleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Sale Details</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="sale-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Invoice No.:</span>
+                        <span class="detail-value" id="view-invoice">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Date:</span>
+                        <span class="detail-value" id="view-date">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Customer:</span>
+                        <span class="detail-value" id="view-customer">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Payment Method:</span>
+                        <span class="detail-value" id="view-payment">-</span>
+                    </div>
+                </div>
+                
+                <div class="sale-items-details">
+                    <h4>Items</h4>
+                    <div class="items-table">
+                        <div class="items-header">
+                            <span>Medicine</span>
+                            <span>Price</span>
+                            <span>Qty</span>
+                            <span>Total</span>
+                        </div>
+                        <div id="saleItemsDetails">
+                            <!-- Sale items will be shown here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sale-summary-details">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span id="view-subtotal">₹0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax (5%):</span>
+                        <span id="view-tax">₹0.00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total:</span>
+                        <span id="view-total">₹0.00</span>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn primary-btn close-modal">Close</button>
+                    <button type="button" class="btn secondary-btn" id="printInvoiceBtn">
+                        <i class="fas fa-print"></i> Print Invoice
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>MedShop</h3>
+                    <p>Advanced Medical Shop Automation Software designed to streamline pharmacy operations and enhance customer service.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="features.html">Features</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="docs.html">Documentation</a></li>
+                        <li><a href="tutorials.html">Tutorials</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="support.html">Support</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> NIT Rourkela, Odisha, India</p>
+                    <p><i class="fas fa-phone"></i> +91 1234567890</p>
+                    <p><i class="fas fa-envelope"></i> info@medshop.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Medical Shop Automation Software. All rights reserved.</p>
+                <p>Developed by NIT Rourkela Team</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+    
+    <script>
+        // Sample data for sales
+        let sales = [
+            {
+                invoiceNo: "INV-2023-001",
+                date: "2023-06-15",
+                customer: "Rahul Sharma",
+                phone: "9876543210",
+                items: [
+                    { medicineId: "MED001", name: "Paracetamol 500mg", price: 5.50, quantity: 2 },
+                    { medicineId: "MED005", name: "Vitamin C 500mg", price: 7.50, quantity: 1 }
+                ],
+                paymentMethod: "cash",
+                subtotal: 18.50,
+                tax: 0.93,
+                total: 19.43,
+                status: "completed"
+            },
+            {
+                invoiceNo: "INV-2023-002",
+                date: "2023-06-16",
+                customer: "Priya Patel",
+                phone: "8765432109",
+                items: [
+                    { medicineId: "MED002", name: "Amoxicillin 250mg", price: 12.75, quantity: 1 },
+                    { medicineId: "MED004", name: "Omeprazole 20mg", price: 15.00, quantity: 1 }
+                ],
+                paymentMethod: "card",
+                subtotal: 27.75,
+                tax: 1.39,
+                total: 29.14,
+                status: "completed"
+            },
+            {
+                invoiceNo: "INV-2023-003",
+                date: "2023-06-17",
+                customer: "Amit Kumar",
+                phone: "7654321098",
+                items: [
+                    { medicineId: "MED001", name: "Paracetamol 500mg", price: 5.50, quantity: 3 },
+                    { medicineId: "MED003", name: "Cetirizine 10mg", price: 8.25, quantity: 2 }
+                ],
+                paymentMethod: "online",
+                subtotal: 33.00,
+                tax: 1.65,
+                total: 34.65,
+                status: "completed"
+            }
+        ];
+
+        // Sample medicine data for sale form
+        const medicinesForSale = [
+            { id: "MED001", name: "Paracetamol 500mg", price: 5.50, stock: 125 },
+            { id: "MED002", name: "Amoxicillin 250mg", price: 12.75, stock: 42 },
+            { id: "MED003", name: "Cetirizine 10mg", price: 8.25, stock: 0 },
+            { id: "MED004", name: "Omeprazole 20mg", price: 15.00, stock: 36 },
+            { id: "MED005", name: "Vitamin C 500mg", price: 7.50, stock: 89 }
+        ];
+
+        // Initialize DataTable and load data
+        $(document).ready(function() {
+            // Load sales into table
+            loadSales();
+            
+            // Initialize DataTable with export buttons
+            const table = $('#salesTable').DataTable({
+                responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                order: [[1, 'desc']] // Sort by date descending
+            });
+            
+            // Update summary cards
+            updateSummaryCards();
+            
+            // Modal functionality
+            const openModal = (modalId) => {
+                document.getElementById(modalId).style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            };
+            
+            const closeModal = (modalId) => {
+                document.getElementById(modalId).style.display = 'none';
+                document.body.style.overflow = 'auto';
+            };
+            
+            // Event listeners for modals
+            document.getElementById('newSaleBtn').addEventListener('click', () => {
+                // Reset form
+                document.getElementById('saleForm').reset();
+                document.getElementById('saleItemsContainer').innerHTML = '';
+                document.getElementById('subtotal').textContent = '0.00';
+                document.getElementById('tax').textContent = '0.00';
+                document.getElementById('total').textContent = '0.00';
+                
+                // Add first item row
+                addItemRow();
+                
+                openModal('newSaleModal');
+            });
+            
+            document.getElementById('exportBtn').addEventListener('click', () => {
+                $('.buttons-csv').click(); // Trigger CSV export
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    closeModal(event.target.id);
+                }
+            });
+            
+            // Add item button
+            document.getElementById('addItemBtn').addEventListener('click', addItemRow);
+            
+            // Form submission for new sale
+            document.getElementById('saleForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Generate new invoice number
+                const newInvoiceNo = 'INV-' + new Date().getFullYear() + '-' + String(sales.length + 1).padStart(3, '0');
+                
+                // Get items from form
+                const items = [];
+                const itemRows = document.querySelectorAll('.item-row');
+                
+                itemRows.forEach(row => {
+                    const medicineId = row.querySelector('.item-medicine').value;
+                    const medicine = medicinesForSale.find(m => m.id === medicineId);
+                    const quantity = parseInt(row.querySelector('.item-quantity').value);
+                    
+                    if (medicine && quantity > 0) {
+                        items.push({
+                            medicineId: medicine.id,
+                            name: medicine.name,
+                            price: medicine.price,
+                            quantity: quantity
+                        });
+                    }
+                });
+                
+                if (items.length === 0) {
+                    alert('Please add at least one item to the sale');
+                    return;
+                }
+                
+                // Calculate totals
+                const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const tax = subtotal * 0.05; // 5% tax
+                const total = subtotal + tax;
+                
+                // Create new sale object
+                const newSale = {
+                    invoiceNo: newInvoiceNo,
+                    date: new Date().toISOString().split('T')[0],
+                    customer: document.getElementById('customerName').value || 'Walk-in Customer',
+                    phone: document.getElementById('customerPhone').value || '',
+                    items: items,
+                    paymentMethod: document.getElementById('paymentMethod').value,
+                    subtotal: subtotal,
+                    tax: tax,
+                    total: total,
+                    status: 'completed'
+                };
+                
+                // Add to sales array
+                sales.push(newSale);
+                
+                // Reload table and update summary
+                loadSales();
+                updateSummaryCards();
+                
+                // Close modal and reset form
+                closeModal('newSaleModal');
+                
+                // Show success message
+                alert(`Sale completed successfully! Invoice No: ${newInvoiceNo}`);
+            });
+            
+            // Print invoice button
+            document.getElementById('printInvoiceBtn')?.addEventListener('click', function() {
+                alert('Invoice printing functionality would be implemented here');
+                // In a real app, this would open a print dialog with the invoice
+            });
+            
+            // Apply filters
+            document.getElementById('applyFiltersBtn').addEventListener('click', applyFilters);
+            
+            // Reset filters
+            document.getElementById('resetFiltersBtn').addEventListener('click', resetFilters);
+            
+            // Search functionality
+            document.getElementById('searchSale').addEventListener('keyup', function() {
+                table.search(this.value).draw();
+            });
+            
+            // Mobile menu toggle
+            document.querySelector('.menu-toggle').addEventListener('click', function() {
+                document.querySelector('.nav-menu').classList.toggle('active');
+            });
+            
+            // Close modal buttons
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal.id);
+                });
+            });
+        });
+        
+        // Add item row to sale form
+        function addItemRow() {
+            const container = document.getElementById('saleItemsContainer');
+            const rowId = 'item-' + Date.now();
+            
+            const row = document.createElement('div');
+            row.className = 'item-row';
+            row.id = rowId;
+            row.innerHTML = `
+                <select class="item-medicine" required>
+                    <option value="">Select Medicine</option>
+                    ${medicinesForSale.map(med => 
+                        `<option value="${med.id}" ${med.stock === 0 ? 'disabled' : ''}>
+                            ${med.name} - ₹${med.price.toFixed(2)} ${med.stock === 0 ? '(Out of Stock)' : ''}
+                        </option>`
+                    ).join('')}
+                </select>
+                <span class="item-price">₹0.00</span>
+                <input type="number" class="item-quantity" min="1" value="1" required>
+                <span class="item-total">₹0.00</span>
+                <button type="button" class="action-btn delete-btn remove-item-btn">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            
+            container.appendChild(row);
+            
+            // Add event listeners to new row
+            const medicineSelect = row.querySelector('.item-medicine');
+            const quantityInput = row.querySelector('.item-quantity');
+            
+            medicineSelect.addEventListener('change', function() {
+                const medicineId = this.value;
+                const medicine = medicinesForSale.find(m => m.id === medicineId);
+                
+                if (medicine) {
+                    row.querySelector('.item-price').textContent = `₹${medicine.price.toFixed(2)}`;
+                    updateItemTotal(row);
+                }
+            });
+            
+            quantityInput.addEventListener('input', function() {
+                updateItemTotal(row);
+            });
+            
+            row.querySelector('.remove-item-btn').addEventListener('click', function() {
+                row.remove();
+                updateSaleTotals();
+            });
+        }
+        
+        // Update item total
+        function updateItemTotal(row) {
+            const medicineId = row.querySelector('.item-medicine').value;
+            const medicine = medicinesForSale.find(m => m.id === medicineId);
+            const quantity = parseInt(row.querySelector('.item-quantity').value) || 0;
+            
+            if (medicine && quantity > 0) {
+                const total = medicine.price * quantity;
+                row.querySelector('.item-total').textContent = `₹${total.toFixed(2)}`;
+                updateSaleTotals();
+            }
+        }
+        
+        // Update sale totals
+        function updateSaleTotals() {
+            let subtotal = 0;
+            const itemRows = document.querySelectorAll('.item-row');
+            
+            itemRows.forEach(row => {
+                const priceText = row.querySelector('.item-price').textContent;
+                const price = parseFloat(priceText.replace('₹', '')) || 0;
+                const quantity = parseInt(row.querySelector('.item-quantity').value) || 0;
+                subtotal += price * quantity;
+            });
+            
+            const tax = subtotal * 0.05; // 5% tax
+            const total = subtotal + tax;
+            
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('tax').textContent = tax.toFixed(2);
+            document.getElementById('total').textContent = total.toFixed(2);
+        }
+        
+        // Load sales into the table
+        function loadSales() {
+            const tableBody = document.getElementById('salesTableBody');
+            tableBody.innerHTML = '';
+            
+            sales.forEach(sale => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${sale.invoiceNo}</td>
+                    <td>${sale.date}</td>
+                    <td>${sale.customer}</td>
+                    <td>${sale.items.length} items</td>
+                    <td>₹${sale.total.toFixed(2)}</td>
+                    <td>${formatPaymentMethod(sale.paymentMethod)}</td>
+                    <td><span class="status ${sale.status}">${formatStatus(sale.status)}</span></td>
+                    <td>
+                        <button class="action-btn view-btn" data-invoice="${sale.invoiceNo}"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn print-btn" data-invoice="${sale.invoiceNo}"><i class="fas fa-print"></i></button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const invoiceNo = this.getAttribute('data-invoice');
+                    showSaleDetails(invoiceNo);
+                    openModal('viewSaleModal');
+                });
+            });
+            
+            document.querySelectorAll('.print-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const invoiceNo = this.getAttribute('data-invoice');
+                    alert(`Print functionality for ${invoiceNo} would be implemented here`);
+                });
+            });
+        }
+        
+        // Show sale details in view modal
+        function showSaleDetails(invoiceNo) {
+            const sale = sales.find(s => s.invoiceNo === invoiceNo);
+            if (!sale) return;
+            
+            document.getElementById('view-invoice').textContent = sale.invoiceNo;
+            document.getElementById('view-date').textContent = sale.date;
+            document.getElementById('view-customer').textContent = sale.customer;
+            if (sale.phone) {
+                document.getElementById('view-customer').textContent += ` (${sale.phone})`;
+            }
+            document.getElementById('view-payment').textContent = formatPaymentMethod(sale.paymentMethod);
+            
+            // Load sale items
+            const itemsContainer = document.getElementById('saleItemsDetails');
+            itemsContainer.innerHTML = '';
+            
+            sale.items.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'items-row';
+                row.innerHTML = `
+                    <span>${item.name}</span>
+                    <span>₹${item.price.toFixed(2)}</span>
+                    <span>${item.quantity}</span>
+                    <span>₹${(item.price * item.quantity).toFixed(2)}</span>
+                `;
+                itemsContainer.appendChild(row);
+            });
+            
+            // Set totals
+            document.getElementById('view-subtotal').textContent = `₹${sale.subtotal.toFixed(2)}`;
+            document.getElementById('view-tax').textContent = `₹${sale.tax.toFixed(2)}`;
+            document.getElementById('view-total').textContent = `₹${sale.total.toFixed(2)}`;
+        }
+        
+        // Update summary cards
+        function updateSummaryCards() {
+            const today = new Date().toISOString().split('T')[0];
+            const currentDate = new Date();
+            const weekStart = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay()));
+            const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            
+            const todaySalesData = sales.filter(sale => sale.date === today);
+            const weekSalesData = sales.filter(sale => new Date(sale.date) >= weekStart);
+            const monthSalesData = sales.filter(sale => new Date(sale.date) >= monthStart);
+            
+            // Today's sales
+            document.getElementById('todaySales').textContent = todaySalesData.length;
+            const todayAmount = todaySalesData.reduce((sum, sale) => sum + sale.total, 0);
+            document.getElementById('todayAmount').textContent = todayAmount.toFixed(2);
+            
+            // This week's sales
+            document.getElementById('weekSales').textContent = weekSalesData.length;
+            const weekAmount = weekSalesData.reduce((sum, sale) => sum + sale.total, 0);
+            document.getElementById('weekAmount').textContent = weekAmount.toFixed(2);
+            
+            // This month's sales
+            document.getElementById('monthSales').textContent = monthSalesData.length;
+            const monthAmount = monthSalesData.reduce((sum, sale) => sum + sale.total, 0);
+            document.getElementById('monthAmount').textContent = monthAmount.toFixed(2);
+            
+            // Total sales
+            document.getElementById('totalSales').textContent = sales.length;
+            const totalAmount = sales.reduce((sum, sale) => sum + sale.total, 0);
+            document.getElementById('totalAmount').textContent = totalAmount.toFixed(2);
+        }
+        
+        // Format payment method for display
+        function formatPaymentMethod(method) {
+            const methods = {
+                'cash': 'Cash',
+                'card': 'Card',
+                'online': 'Online'
+            };
+            return methods[method] || method;
+        }
+        
+        // Format status for display
+        function formatStatus(status) {
+            return status.charAt(0).toUpperCase() + status.slice(1);
+        }
+        
+        // Apply filters to the table
+        function applyFilters() {
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            const paymentFilter = document.getElementById('paymentFilter').value;
+            
+            // Get DataTable instance
+            const table = $('#salesTable').DataTable();
+            
+            // Reset search
+            table.search('').draw();
+            
+            // Apply date filter if provided
+            if (dateFrom && dateTo) {
+                table.column(1).search(`${dateFrom} ${dateTo}`, true, false).draw();
+            }
+            
+            // Apply payment method filter if provided
+            if (paymentFilter) {
+                table.column(5).search(paymentFilter).draw();
+            }
+        }
+        
+        // Reset all filters
+        function resetFilters() {
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            document.getElementById('paymentFilter').value = '';
+            document.getElementById('searchSale').value = '';
+            
+            // Get DataTable instance
+            const table = $('#salesTable').DataTable();
+            
+            // Reset all filters and search
+            table.search('').columns().search('').draw();
+        }
+    </script>
+</body>
+</html>
+
+
+
+

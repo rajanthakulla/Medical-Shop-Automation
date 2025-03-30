@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management - Medical Shop Automation Software</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <h1>MedShop</h1>
+                </div>
+                <div class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="inventory.html" class="active">Inventory</a></li>
+                    <li><a href="sales.html">Sales</a></li>
+                    <li><a href="prescriptions.html">Prescriptions</a></li>
+                    <li><a href="suppliers.html">Suppliers</a></li>
+                    <li><a href="reports.html">Reports</a></li>
+                </ul>
+                <div class="user-actions">
+                    <div class="user-profile">
+                        <img src="/api/placeholder/40/40" alt="User Profile">
+                        <span>Admin</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="inventory-main">
+        <div class="container">
+            <div class="inventory-header">
+                <h2><i class="fas fa-pills"></i> Inventory Management</h2>
+                <div class="inventory-actions">
+                    <button class="btn primary-btn" id="addMedicineBtn">
+                        <i class="fas fa-plus"></i> Add Medicine
+                    </button>
+                    <button class="btn secondary-btn" id="importBtn">
+                        <i class="fas fa-file-import"></i> Import
+                    </button>
+                    <button class="btn secondary-btn" id="exportBtn">
+                        <i class="fas fa-file-export"></i> Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inventory Filters -->
+            <div class="inventory-filters">
+                <div class="filter-group">
+                    <label for="searchMedicine">Search:</label>
+                    <div class="input-group">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchMedicine" placeholder="Search by name, generic name or batch">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label for="categoryFilter">Category:</label>
+                    <select id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="antibiotic">Antibiotics</option>
+                        <option value="analgesic">Analgesics</option>
+                        <option value="antihistamine">Antihistamines</option>
+                        <option value="antacid">Antacids</option>
+                        <option value="vitamin">Vitamins</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="stockFilter">Stock Status:</label>
+                    <select id="stockFilter">
+                        <option value="">All</option>
+                        <option value="low">Low Stock</option>
+                        <option value="out">Out of Stock</option>
+                        <option value="expiring">Expiring Soon</option>
+                    </select>
+                </div>
+                <button class="btn primary-btn" id="applyFiltersBtn">Apply Filters</button>
+                <button class="btn secondary-btn" id="resetFiltersBtn">Reset</button>
+            </div>
+
+            <!-- Inventory Summary Cards -->
+            <div class="inventory-summary">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-capsules"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Total Medicines</h3>
+                        <p class="count" id="totalMedicines">0</p>
+                    </div>
+                </div>
+                <div class="summary-card warning">
+                    <div class="summary-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Low Stock</h3>
+                        <p class="count" id="lowStock">0</p>
+                    </div>
+                </div>
+                <div class="summary-card danger">
+                    <div class="summary-icon">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Out of Stock</h3>
+                        <p class="count" id="outOfStock">0</p>
+                    </div>
+                </div>
+                <div class="summary-card danger">
+                    <div class="summary-icon">
+                        <i class="fas fa-calendar-times"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Expiring Soon</h3>
+                        <p class="count" id="expiringSoon">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Table -->
+            <div class="inventory-table-container">
+                <table id="inventoryTable" class="display">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Medicine Name</th>
+                            <th>Generic Name</th>
+                            <th>Batch No.</th>
+                            <th>Category</th>
+                            <th>Manufacturer</th>
+                            <th>Expiry Date</th>
+                            <th>Price (₹)</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTableBody">
+                        <!-- Data will be loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Medicine Modal -->
+    <div class="modal" id="addMedicineModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Medicine</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="medicineForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="medicineName">Medicine Name*</label>
+                            <input type="text" id="medicineName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="genericName">Generic Name*</label>
+                            <input type="text" id="genericName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="batchNumber">Batch Number*</label>
+                            <input type="text" id="batchNumber" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="category">Category*</label>
+                            <select id="category" required>
+                                <option value="">Select Category</option>
+                                <option value="antibiotic">Antibiotic</option>
+                                <option value="analgesic">Analgesic</option>
+                                <option value="antihistamine">Antihistamine</option>
+                                <option value="antacid">Antacid</option>
+                                <option value="vitamin">Vitamin</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="manufacturer">Manufacturer*</label>
+                            <input type="text" id="manufacturer" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expiryDate">Expiry Date*</label>
+                            <input type="date" id="expiryDate" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="price">Price (₹)*</label>
+                            <input type="number" id="price" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity">Quantity*</label>
+                            <input type="number" id="quantity" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn secondary-btn close-modal">Cancel</button>
+                        <button type="submit" class="btn primary-btn">Save Medicine</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Medicine Modal -->
+    <div class="modal" id="viewMedicineModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Medicine Details</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="medicine-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Medicine ID:</span>
+                        <span class="detail-value" id="view-id">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Medicine Name:</span>
+                        <span class="detail-value" id="view-name">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Generic Name:</span>
+                        <span class="detail-value" id="view-generic">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Batch Number:</span>
+                        <span class="detail-value" id="view-batch">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Category:</span>
+                        <span class="detail-value" id="view-category">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Manufacturer:</span>
+                        <span class="detail-value" id="view-manufacturer">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Expiry Date:</span>
+                        <span class="detail-value" id="view-expiry">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Price:</span>
+                        <span class="detail-value" id="view-price">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Current Stock:</span>
+                        <span class="detail-value" id="view-stock">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Status:</span>
+                        <span class="detail-value status" id="view-status">-</span>
+                    </div>
+                    <div class="detail-row full-width">
+                        <span class="detail-label">Description:</span>
+                        <span class="detail-value" id="view-description">-</span>
+                    </div>
+                </div>
+                
+                <div class="stock-history">
+                    <h4>Stock History</h4>
+                    <div class="history-table">
+                        <div class="history-header">
+                            <span>Date</span>
+                            <span>Type</span>
+                            <span>Quantity</span>
+                            <span>Remarks</span>
+                        </div>
+                        <div id="stockHistoryBody">
+                            <!-- Stock history will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn primary-btn close-modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="modal" id="importModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Import Medicines</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="importForm">
+                    <div class="form-group">
+                        <label for="importFile">Select CSV/Excel File</label>
+                        <input type="file" id="importFile" accept=".csv, .xlsx, .xls" required>
+                        <small class="form-text">File should contain medicine details in proper format</small>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="overwriteExisting" checked>
+                            Overwrite existing medicines with same batch number
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn secondary-btn close-modal">Cancel</button>
+                        <button type="submit" class="btn primary-btn">Import</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>MedShop</h3>
+                    <p>Advanced Medical Shop Automation Software designed to streamline pharmacy operations and enhance customer service.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="features.html">Features</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="docs.html">Documentation</a></li>
+                        <li><a href="tutorials.html">Tutorials</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="support.html">Support</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> NIT Rourkela, Odisha, India</p>
+                    <p><i class="fas fa-phone"></i> +91 1234567890</p>
+                    <p><i class="fas fa-envelope"></i> info@medshop.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Medical Shop Automation Software. All rights reserved.</p>
+                <p>Developed by NIT Rourkela Team</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+    
+    <script>
+        // Sample data for medicines
+        let medicines = [
+            {
+                id: "MED001",
+                name: "Paracetamol 500mg",
+                genericName: "Acetaminophen",
+                batchNumber: "BATCH2023-01",
+                category: "analgesic",
+                manufacturer: "ABC Pharma",
+                expiryDate: "2024-06-30",
+                price: 5.50,
+                stock: 125,
+                description: "Paracetamol is a commonly used medicine that can help treat pain and reduce a high temperature (fever)."
+            },
+            {
+                id: "MED002",
+                name: "Amoxicillin 250mg",
+                genericName: "Amoxicillin",
+                batchNumber: "BATCH2023-02",
+                category: "antibiotic",
+                manufacturer: "XYZ Pharma",
+                expiryDate: "2024-09-15",
+                price: 12.75,
+                stock: 42,
+                description: "Amoxicillin is an antibiotic used to treat a number of bacterial infections."
+            },
+            {
+                id: "MED003",
+                name: "Cetirizine 10mg",
+                genericName: "Cetirizine Hydrochloride",
+                batchNumber: "BATCH2023-03",
+                category: "antihistamine",
+                manufacturer: "DEF Pharma",
+                expiryDate: "2025-01-20",
+                price: 8.25,
+                stock: 0,
+                description: "Cetirizine is an antihistamine used to relieve allergy symptoms."
+            },
+            {
+                id: "MED004",
+                name: "Omeprazole 20mg",
+                genericName: "Omeprazole",
+                batchNumber: "BATCH2023-04",
+                category: "antacid",
+                manufacturer: "GHI Pharma",
+                expiryDate: "2023-12-31",
+                price: 15.00,
+                stock: 36,
+                description: "Omeprazole is a proton pump inhibitor used to treat acid reflux and stomach ulcers."
+            },
+            {
+                id: "MED005",
+                name: "Vitamin C 500mg",
+                genericName: "Ascorbic Acid",
+                batchNumber: "BATCH2023-05",
+                category: "vitamin",
+                manufacturer: "JKL Pharma",
+                expiryDate: "2024-11-30",
+                price: 7.50,
+                stock: 89,
+                description: "Vitamin C is essential for the growth and repair of tissues in all parts of your body."
+            }
+        ];
+
+        // Stock history data
+        let stockHistory = {
+            "MED001": [
+                { date: "2023-05-15", type: "Purchase", quantity: "+150", remarks: "Initial stock" },
+                { date: "2023-06-02", type: "Sale", quantity: "-25", remarks: "Customer purchase" }
+            ],
+            "MED002": [
+                { date: "2023-05-20", type: "Purchase", quantity: "+100", remarks: "Initial stock" },
+                { date: "2023-06-10", type: "Sale", quantity: "-58", remarks: "Customer purchase" }
+            ],
+            "MED003": [
+                { date: "2023-06-01", type: "Purchase", quantity: "+50", remarks: "Initial stock" },
+                { date: "2023-06-15", type: "Sale", quantity: "-50", remarks: "Customer purchase" }
+            ],
+            "MED004": [
+                { date: "2023-05-10", type: "Purchase", quantity: "+60", remarks: "Initial stock" },
+                { date: "2023-06-05", type: "Sale", quantity: "-24", remarks: "Customer purchase" }
+            ],
+            "MED005": [
+                { date: "2023-05-25", type: "Purchase", quantity: "+100", remarks: "Initial stock" },
+                { date: "2023-06-12", type: "Sale", quantity: "-11", remarks: "Customer purchase" }
+            ]
+        };
+
+        // Initialize DataTable and load data
+        $(document).ready(function() {
+            // Load medicines into table
+            loadMedicines();
+            
+            // Initialize DataTable with export buttons
+            const table = $('#inventoryTable').DataTable({
+                responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+            
+            // Update summary cards
+            updateSummaryCards();
+            
+            // Modal functionality
+            const openModal = (modalId) => {
+                document.getElementById(modalId).style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            };
+            
+            const closeModal = (modalId) => {
+                document.getElementById(modalId).style.display = 'none';
+                document.body.style.overflow = 'auto';
+            };
+            
+            // Event listeners for modals
+            document.getElementById('addMedicineBtn').addEventListener('click', () => openModal('addMedicineModal'));
+            document.getElementById('importBtn').addEventListener('click', () => openModal('importModal'));
+            document.getElementById('exportBtn').addEventListener('click', () => {
+                $('.buttons-csv').click(); // Trigger CSV export
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    closeModal(event.target.id);
+                }
+            });
+            
+            // Form submission for adding medicine
+            document.getElementById('medicineForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Generate new ID
+                const newId = 'MED' + String(medicines.length + 1).padStart(3, '0');
+                
+                // Create new medicine object
+                const newMedicine = {
+                    id: newId,
+                    name: document.getElementById('medicineName').value,
+                    genericName: document.getElementById('genericName').value,
+                    batchNumber: document.getElementById('batchNumber').value,
+                    category: document.getElementById('category').value,
+                    manufacturer: document.getElementById('manufacturer').value,
+                    expiryDate: document.getElementById('expiryDate').value,
+                    price: parseFloat(document.getElementById('price').value),
+                    stock: parseInt(document.getElementById('quantity').value),
+                    description: document.getElementById('description').value
+                };
+                
+                // Add to medicines array
+                medicines.push(newMedicine);
+                
+                // Add empty stock history for new medicine
+                stockHistory[newId] = [
+                    { 
+                        date: new Date().toISOString().split('T')[0], 
+                        type: "Purchase", 
+                        quantity: "+" + newMedicine.stock, 
+                        remarks: "Initial stock" 
+                    }
+                ];
+                
+                // Reload table and update summary
+                loadMedicines();
+                updateSummaryCards();
+                
+                // Close modal and reset form
+                closeModal('addMedicineModal');
+                this.reset();
+                
+                // Show success message
+                alert('Medicine added successfully!');
+            });
+            
+            // Import form submission
+            document.getElementById('importForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // In a real app, this would parse the CSV/Excel file
+                // For demo, we'll just simulate importing 2 medicines
+                const file = document.getElementById('importFile').files[0];
+                if (file) {
+                    // Simulate processing delay
+                    setTimeout(() => {
+                        const importedMedicines = [
+                            {
+                                id: 'MED006',
+                                name: 'Ibuprofen 400mg',
+                                genericName: 'Ibuprofen',
+                                batchNumber: 'BATCH2023-06',
+                                category: 'analgesic',
+                                manufacturer: 'MNO Pharma',
+                                expiryDate: '2024-08-15',
+                                price: 10.25,
+                                stock: 75,
+                                description: 'Ibuprofen is a medication in the nonsteroidal anti-inflammatory drug class.'
+                            },
+                            {
+                                id: 'MED007',
+                                name: 'Loratadine 10mg',
+                                genericName: 'Loratadine',
+                                batchNumber: 'BATCH2023-07',
+                                category: 'antihistamine',
+                                manufacturer: 'PQR Pharma',
+                                expiryDate: '2025-03-31',
+                                price: 9.50,
+                                stock: 60,
+                                description: 'Loratadine is an antihistamine used to treat allergy symptoms.'
+                            }
+                        ];
+                        
+                        // Add to medicines array
+                        medicines = medicines.concat(importedMedicines);
+                        
+                        // Add stock history for imported medicines
+                        importedMedicines.forEach(med => {
+                            stockHistory[med.id] = [
+                                { 
+                                    date: new Date().toISOString().split('T')[0], 
+                                    type: "Purchase", 
+                                    quantity: "+" + med.stock, 
+                                    remarks: "Imported stock" 
+                                }
+                            ];
+                        });
+                        
+                        // Reload table and update summary
+                        loadMedicines();
+                        updateSummaryCards();
+                        
+                        // Close modal and reset form
+                        closeModal('importModal');
+                        this.reset();
+                        
+                        // Show success message
+                        alert(`Successfully imported ${importedMedicines.length} medicines!`);
+                    }, 1500);
+                }
+            });
+            
+            // Apply filters
+            document.getElementById('applyFiltersBtn').addEventListener('click', applyFilters);
+            
+            // Reset filters
+            document.getElementById('resetFiltersBtn').addEventListener('click', resetFilters);
+            
+            // Search functionality
+            document.getElementById('searchMedicine').addEventListener('keyup', function() {
+                table.search(this.value).draw();
+            });
+            
+            // Mobile menu toggle
+            document.querySelector('.menu-toggle').addEventListener('click', function() {
+                document.querySelector('.nav-menu').classList.toggle('active');
+            });
+            
+            // Close modal buttons
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal.id);
+                });
+            });
+        });
+        
+        // Load medicines into the table
+        function loadMedicines() {
+            const tableBody = document.getElementById('inventoryTableBody');
+            tableBody.innerHTML = '';
+            
+            medicines.forEach(medicine => {
+                const status = getMedicineStatus(medicine);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${medicine.id}</td>
+                    <td>${medicine.name}</td>
+                    <td>${medicine.genericName}</td>
+                    <td>${medicine.batchNumber}</td>
+                    <td>${formatCategory(medicine.category)}</td>
+                    <td>${medicine.manufacturer}</td>
+                    <td>${medicine.expiryDate}</td>
+                    <td>₹${medicine.price.toFixed(2)}</td>
+                    <td>${medicine.stock}</td>
+                    <td><span class="status ${status.class}">${status.text}</span></td>
+                    <td>
+                        <button class="action-btn edit-btn" data-id="${medicine.id}"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn delete-btn" data-id="${medicine.id}"><i class="fas fa-trash"></i></button>
+                        <button class="action-btn view-btn" data-id="${medicine.id}"><i class="fas fa-eye"></i></button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const medicineId = this.getAttribute('data-id');
+                    showMedicineDetails(medicineId);
+                    openModal('viewMedicineModal');
+                });
+            });
+            
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const medicineId = this.getAttribute('data-id');
+                    // In a real app, this would open an edit modal
+                    alert(`Edit functionality for ${medicineId} would be implemented here`);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const medicineId = this.getAttribute('data-id');
+                    if (confirm(`Are you sure you want to delete medicine ${medicineId}?`)) {
+                        // Remove medicine from array
+                        medicines = medicines.filter(med => med.id !== medicineId);
+                        
+                        // Remove stock history
+                        delete stockHistory[medicineId];
+                        
+                        // Reload table and update summary
+                        loadMedicines();
+                        updateSummaryCards();
+                        
+                        alert('Medicine deleted successfully!');
+                    }
+                });
+            });
+        }
+        
+        // Show medicine details in view modal
+        function showMedicineDetails(medicineId) {
+            const medicine = medicines.find(med => med.id === medicineId);
+            if (!medicine) return;
+            
+            const status = getMedicineStatus(medicine);
+            
+            document.getElementById('view-id').textContent = medicine.id;
+            document.getElementById('view-name').textContent = medicine.name;
+            document.getElementById('view-generic').textContent = medicine.genericName;
+            document.getElementById('view-batch').textContent = medicine.batchNumber;
+            document.getElementById('view-category').textContent = formatCategory(medicine.category);
+            document.getElementById('view-manufacturer').textContent = medicine.manufacturer;
+            document.getElementById('view-expiry').textContent = medicine.expiryDate;
+            document.getElementById('view-price').textContent = `₹${medicine.price.toFixed(2)}`;
+            document.getElementById('view-stock').textContent = medicine.stock;
+            document.getElementById('view-description').textContent = medicine.description || 'No description available';
+            
+            // Set status with appropriate class
+            const statusElement = document.getElementById('view-status');
+            statusElement.textContent = status.text;
+            statusElement.className = 'detail-value status ' + status.class;
+            
+            // Load stock history
+            const historyBody = document.getElementById('stockHistoryBody');
+            historyBody.innerHTML = '';
+            
+            if (stockHistory[medicineId] && stockHistory[medicineId].length > 0) {
+                stockHistory[medicineId].forEach(entry => {
+                    const row = document.createElement('div');
+                    row.className = 'history-row';
+                    row.innerHTML = `
+                        <span>${entry.date}</span>
+                        <span>${entry.type}</span>
+                        <span>${entry.quantity}</span>
+                        <span>${entry.remarks}</span>
+                    `;
+                    historyBody.appendChild(row);
+                });
+            } else {
+                const row = document.createElement('div');
+                row.className = 'history-row';
+                row.innerHTML = '<span colspan="4">No stock history available</span>';
+                historyBody.appendChild(row);
+            }
+        }
+        
+        // Update summary cards
+        function updateSummaryCards() {
+            const today = new Date();
+            const nextMonth = new Date();
+            nextMonth.setMonth(today.getMonth() + 1);
+            
+            const total = medicines.length;
+            const lowStock = medicines.filter(med => med.stock > 0 && med.stock <= 50).length;
+            const outOfStock = medicines.filter(med => med.stock === 0).length;
+            const expiringSoon = medicines.filter(med => {
+                const expiryDate = new Date(med.expiryDate);
+                return expiryDate <= nextMonth && expiryDate >= today;
+            }).length;
+            
+            document.getElementById('totalMedicines').textContent = total;
+            document.getElementById('lowStock').textContent = lowStock;
+            document.getElementById('outOfStock').textContent = outOfStock;
+            document.getElementById('expiringSoon').textContent = expiringSoon;
+        }
+        
+        // Get medicine status
+        function getMedicineStatus(medicine) {
+            const today = new Date();
+            const expiryDate = new Date(medicine.expiryDate);
+            const nextMonth = new Date();
+            nextMonth.setMonth(today.getMonth() + 1);
+            
+            if (medicine.stock === 0) {
+                return { text: "Out of Stock", class: "out-of-stock" };
+            } else if (expiryDate <= today) {
+                return { text: "Expired", class: "danger" };
+            } else if (expiryDate <= nextMonth) {
+                return { text: "Expiring Soon", class: "expiring" };
+            } else if (medicine.stock <= 50) {
+                return { text: "Low Stock", class: "low-stock" };
+            } else {
+                return { text: "In Stock", class: "in-stock" };
+            }
+        }
+        
+        // Format category for display
+        function formatCategory(category) {
+            const categories = {
+                'antibiotic': 'Antibiotic',
+                'analgesic': 'Analgesic',
+                'antihistamine': 'Antihistamine',
+                'antacid': 'Antacid',
+                'vitamin': 'Vitamin',
+                'other': 'Other'
+            };
+            return categories[category] || category;
+        }
+        
+        // Apply filters to the table
+        function applyFilters() {
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const stockFilter = document.getElementById('stockFilter').value;
+            
+            // Get DataTable instance
+            const table = $('#inventoryTable').DataTable();
+            
+            // Reset search
+            table.search('').draw();
+            
+            // Apply filters
+            table.column(4).search(categoryFilter).draw(); // Category column
+            table.column(9).search(stockFilter).draw();   // Status column
+        }
+        
+        // Reset all filters
+        function resetFilters() {
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('stockFilter').value = '';
+            document.getElementById('searchMedicine').value = '';
+            
+            // Get DataTable instance
+            const table = $('#inventoryTable').DataTable();
+            
+            // Reset all filters and search
+            table.search('').columns().search('').draw();
+        }
+    </script>
+</body>
+</html>

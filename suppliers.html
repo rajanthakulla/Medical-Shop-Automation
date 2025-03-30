@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Management - Medical Shop Automation Software</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="suppliers.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <h1>MedShop</h1>
+                </div>
+                <div class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="inventory.html">Inventory</a></li>
+                    <li><a href="sales.html">Sales</a></li>
+                    <li><a href="prescriptions.html">Prescriptions</a></li>
+                    <li><a href="suppliers.html" class="active">Suppliers</a></li>
+                    <li><a href="reports.html">Reports</a></li>
+                </ul>
+                <div class="user-actions">
+                    <div class="user-profile">
+                        <img src="/api/placeholder/40/40" alt="User Profile">
+                        <span>Admin</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="suppliers-main">
+        <div class="container">
+            <div class="suppliers-header">
+                <h2><i class="fas fa-truck"></i> Supplier Management</h2>
+                <div class="suppliers-actions">
+                    <button class="btn primary-btn" id="addSupplierBtn">
+                        <i class="fas fa-plus"></i> Add Supplier
+                    </button>
+                    <button class="btn secondary-btn" id="importBtn">
+                        <i class="fas fa-file-import"></i> Import
+                    </button>
+                    <button class="btn secondary-btn" id="exportBtn">
+                        <i class="fas fa-file-export"></i> Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Supplier Filters -->
+            <div class="suppliers-filters">
+                <div class="filter-group">
+                    <label for="searchSupplier">Search:</label>
+                    <div class="input-group">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchSupplier" placeholder="Search by name, email or phone">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label for="categoryFilter">Category:</label>
+                    <select id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="pharmaceutical">Pharmaceutical</option>
+                        <option value="equipment">Medical Equipment</option>
+                        <option value="generic">Generic Medicines</option>
+                        <option value="ayurvedic">Ayurvedic</option>
+                    </select>
+                </div>
+                <button class="btn primary-btn" id="applyFiltersBtn">Apply Filters</button>
+                <button class="btn secondary-btn" id="resetFiltersBtn">Reset</button>
+            </div>
+
+            <!-- Supplier Summary Cards -->
+            <div class="suppliers-summary">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Total Suppliers</h3>
+                        <p class="count" id="totalSuppliers">0</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Pharmaceutical</h3>
+                        <p class="count" id="pharmaSuppliers">0</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-procedures"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Equipment</h3>
+                        <p class="count" id="equipmentSuppliers">0</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Ayurvedic</h3>
+                        <p class="count" id="ayurvedicSuppliers">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Supplier Table -->
+            <div class="suppliers-table-container">
+                <table id="suppliersTable" class="display">
+                    <thead>
+                        <tr>
+                            <th>Supplier ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Contact</th>
+                            <th>Email</th>
+                            <th>Location</th>
+                            <th>Medicines</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="suppliersTableBody">
+                        <!-- Data will be loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Supplier Modal -->
+    <div class="modal" id="addSupplierModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Supplier</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="supplierForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="supplierName">Supplier Name*</label>
+                            <input type="text" id="supplierName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="supplierCategory">Category*</label>
+                            <select id="supplierCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="pharmaceutical">Pharmaceutical</option>
+                                <option value="equipment">Medical Equipment</option>
+                                <option value="generic">Generic Medicines</option>
+                                <option value="ayurvedic">Ayurvedic</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="supplierContact">Contact Number*</label>
+                            <input type="tel" id="supplierContact" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="supplierEmail">Email Address*</label>
+                            <input type="email" id="supplierEmail" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="supplierAddress">Address*</label>
+                        <textarea id="supplierAddress" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="supplierProducts">Products/Medicines Supplied</label>
+                        <textarea id="supplierProducts" rows="3" placeholder="List of medicines or products separated by commas"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="supplierNotes">Notes</label>
+                        <textarea id="supplierNotes" rows="2"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn secondary-btn close-modal">Cancel</button>
+                        <button type="submit" class="btn primary-btn">Save Supplier</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Supplier Modal -->
+    <div class="modal" id="viewSupplierModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Supplier Details</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="supplier-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Supplier ID:</span>
+                        <span class="detail-value" id="view-supplierId">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Name:</span>
+                        <span class="detail-value" id="view-supplierName">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Category:</span>
+                        <span class="detail-value" id="view-supplierCategory">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Contact:</span>
+                        <span class="detail-value" id="view-supplierContact">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Email:</span>
+                        <span class="detail-value" id="view-supplierEmail">-</span>
+                    </div>
+                    <div class="detail-row full-width">
+                        <span class="detail-label">Address:</span>
+                        <span class="detail-value" id="view-supplierAddress">-</span>
+                    </div>
+                    <div class="detail-row full-width">
+                        <span class="detail-label">Products/Medicines:</span>
+                        <span class="detail-value" id="view-supplierProducts">-</span>
+                    </div>
+                    <div class="detail-row full-width">
+                        <span class="detail-label">Notes:</span>
+                        <span class="detail-value" id="view-supplierNotes">-</span>
+                    </div>
+                </div>
+                
+                <div class="supplier-orders">
+                    <h4>Recent Orders</h4>
+                    <div class="orders-table">
+                        <div class="orders-header">
+                            <span>Order ID</span>
+                            <span>Date</span>
+                            <span>Items</span>
+                            <span>Amount</span>
+                            <span>Status</span>
+                        </div>
+                        <div id="supplierOrdersBody">
+                            <!-- Orders will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn primary-btn close-modal">Close</button>
+                    <button type="button" class="btn secondary-btn" id="placeOrderBtn">
+                        <i class="fas fa-shopping-cart"></i> Place New Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="modal" id="importModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Import Suppliers</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="importForm">
+                    <div class="form-group">
+                        <label for="importFile">Select CSV/Excel File</label>
+                        <input type="file" id="importFile" accept=".csv, .xlsx, .xls" required>
+                        <small class="form-text">File should contain supplier details in proper format</small>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="overwriteExisting" checked>
+                            Overwrite existing suppliers with same contact/email
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn secondary-btn close-modal">Cancel</button>
+                        <button type="submit" class="btn primary-btn">Import</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>MedShop</h3>
+                    <p>Advanced Medical Shop Automation Software designed to streamline pharmacy operations and enhance customer service.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="features.html">Features</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="docs.html">Documentation</a></li>
+                        <li><a href="tutorials.html">Tutorials</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="support.html">Support</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> NIT Rourkela, Odisha, India</p>
+                    <p><i class="fas fa-phone"></i> +91 1234567890</p>
+                    <p><i class="fas fa-envelope"></i> info@medshop.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Medical Shop Automation Software. All rights reserved.</p>
+                <p>Developed by NIT Rourkela Team</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    
+    <script>
+        // Sample data for suppliers
+        let suppliers = [
+            {
+                id: "SUP001",
+                name: "ABC Pharmaceuticals",
+                category: "pharmaceutical",
+                contact: "9876543210",
+                email: "abc@pharma.com",
+                address: "123 Pharma Street, Mumbai, Maharashtra",
+                products: "Paracetamol, Amoxicillin, Omeprazole, Cetirizine",
+                notes: "Primary supplier for antibiotics"
+            },
+            {
+                id: "SUP002",
+                name: "XYZ Medical Equipment",
+                category: "equipment",
+                contact: "8765432109",
+                email: "sales@xyzmed.com",
+                address: "456 Equipment Road, Delhi",
+                products: "BP Monitors, Thermometers, Stethoscopes",
+                notes: "Bulk discounts available"
+            },
+            {
+                id: "SUP003",
+                name: "Generic Meds Ltd.",
+                category: "generic",
+                contact: "7654321098",
+                email: "info@genericmeds.com",
+                address: "789 Generic Lane, Bangalore, Karnataka",
+                products: "Generic versions of all major medicines",
+                notes: "Lead time: 3-5 days"
+            },
+            {
+                id: "SUP004",
+                name: "AyurLife Solutions",
+                category: "ayurvedic",
+                contact: "6543210987",
+                email: "support@ayurlife.com",
+                address: "321 Herbal Gardens, Kerala",
+                products: "Ashwagandha, Triphala, Brahmi, Neem",
+                notes: "Organic certified products"
+            }
+        ];
+
+        // Sample order data
+        let supplierOrders = {
+            "SUP001": [
+                { id: "ORD-2023-001", date: "2023-05-15", items: "Amoxicillin (100), Paracetamol (200)", amount: "₹12,500", status: "completed" },
+                { id: "ORD-2023-004", date: "2023-06-10", items: "Omeprazole (50), Cetirizine (100)", amount: "₹8,750", status: "shipped" }
+            ],
+            "SUP002": [
+                { id: "ORD-2023-002", date: "2023-05-20", items: "BP Monitors (5), Thermometers (10)", amount: "₹15,200", status: "completed" }
+            ],
+            "SUP003": [
+                { id: "ORD-2023-003", date: "2023-06-01", items: "Generic Paracetamol (500)", amount: "₹6,250", status: "processing" }
+            ],
+            "SUP004": [
+                { id: "ORD-2023-005", date: "2023-06-15", items: "Ashwagandha (50), Triphala (30)", amount: "₹9,800", status: "pending" }
+            ]
+        };
+
+        // Initialize DataTable and load data
+        $(document).ready(function() {
+            // Load suppliers into table
+            loadSuppliers();
+            
+            // Initialize DataTable
+            const table = $('#suppliersTable').DataTable({
+                responsive: true
+            });
+            
+            // Update summary cards
+            updateSummaryCards();
+            
+            // Modal functionality
+            const openModal = (modalId) => {
+                document.getElementById(modalId).style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            };
+            
+            const closeModal = (modalId) => {
+                document.getElementById(modalId).style.display = 'none';
+                document.body.style.overflow = 'auto';
+            };
+            
+            // Event listeners for modals
+            document.getElementById('addSupplierBtn').addEventListener('click', () => openModal('addSupplierModal'));
+            document.getElementById('importBtn').addEventListener('click', () => openModal('importModal'));
+            document.getElementById('exportBtn').addEventListener('click', () => {
+                // Trigger CSV export
+                const table = $('#suppliersTable').DataTable();
+                table.button('.buttons-csv').trigger();
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    closeModal(event.target.id);
+                }
+            });
+            
+            // Form submission for adding supplier
+            document.getElementById('supplierForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Generate new supplier ID
+                const newSupplierId = 'SUP' + String(suppliers.length + 1).padStart(3, '0');
+                
+                // Create new supplier object
+                const newSupplier = {
+                    id: newSupplierId,
+                    name: document.getElementById('supplierName').value,
+                    category: document.getElementById('supplierCategory').value,
+                    contact: document.getElementById('supplierContact').value,
+                    email: document.getElementById('supplierEmail').value,
+                    address: document.getElementById('supplierAddress').value,
+                    products: document.getElementById('supplierProducts').value || '',
+                    notes: document.getElementById('supplierNotes').value || ''
+                };
+                
+                // Add to suppliers array
+                suppliers.push(newSupplier);
+                
+                // Add empty orders for new supplier
+                supplierOrders[newSupplierId] = [];
+                
+                // Reload table and update summary
+                loadSuppliers();
+                updateSummaryCards();
+                
+                // Close modal and reset form
+                closeModal('addSupplierModal');
+                this.reset();
+                
+                // Show success message
+                alert('Supplier added successfully!');
+            });
+            
+            // Import form submission
+            document.getElementById('importForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // In a real app, this would parse the CSV/Excel file
+                // For demo, we'll just simulate importing 2 suppliers
+                const file = document.getElementById('importFile').files[0];
+                if (file) {
+                    // Simulate processing delay
+                    setTimeout(() => {
+                        const importedSuppliers = [
+                            {
+                                id: 'SUP005',
+                                name: 'MediQuick Distributors',
+                                category: 'pharmaceutical',
+                                contact: '9876543211',
+                                email: 'sales@mediquick.com',
+                                address: '101 Distributor Avenue, Chennai',
+                                products: 'Wide range of medicines and vaccines',
+                                notes: '24/7 emergency supply available'
+                            },
+                            {
+                                id: 'SUP006',
+                                name: 'Surgical World',
+                                category: 'equipment',
+                                contact: '9876543212',
+                                email: 'orders@surgicalworld.com',
+                                address: '202 Surgical Lane, Hyderabad',
+                                products: 'Surgical instruments, gloves, masks',
+                                notes: 'Bulk orders preferred'
+                            }
+                        ];
+                        
+                        // Add to suppliers array
+                        suppliers = suppliers.concat(importedSuppliers);
+                        
+                        // Add empty orders for imported suppliers
+                        importedSuppliers.forEach(sup => {
+                            supplierOrders[sup.id] = [];
+                        });
+                        
+                        // Reload table and update summary
+                        loadSuppliers();
+                        updateSummaryCards();
+                        
+                        // Close modal and reset form
+                        closeModal('importModal');
+                        this.reset();
+                        
+                        // Show success message
+                        alert(`Successfully imported ${importedSuppliers.length} suppliers!`);
+                    }, 1500);
+                }
+            });
+            
+            // Place order button
+            document.getElementById('placeOrderBtn')?.addEventListener('click', function() {
+                const supplierId = document.getElementById('view-supplierId').textContent;
+                alert(`Order placement functionality for ${supplierId} would be implemented here`);
+            });
+            
+            // Apply filters
+            document.getElementById('applyFiltersBtn').addEventListener('click', applyFilters);
+            
+            // Reset filters
+            document.getElementById('resetFiltersBtn').addEventListener('click', resetFilters);
+            
+            // Search functionality
+            document.getElementById('searchSupplier').addEventListener('keyup', function() {
+                table.search(this.value).draw();
+            });
+            
+            // Mobile menu toggle
+            document.querySelector('.menu-toggle').addEventListener('click', function() {
+                document.querySelector('.nav-menu').classList.toggle('active');
+            });
+            
+            // Close modal buttons
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal.id);
+                });
+            });
+        });
+        
+        // Load suppliers into the table
+        function loadSuppliers() {
+            const tableBody = document.getElementById('suppliersTableBody');
+            tableBody.innerHTML = '';
+            
+            suppliers.forEach(supplier => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${supplier.id}</td>
+                    <td>${supplier.name}</td>
+                    <td>${formatCategory(supplier.category)}</td>
+                    <td>${supplier.contact}</td>
+                    <td>${supplier.email}</td>
+                    <td>${supplier.address.split(',')[0]}</td>
+                    <td>${supplier.products.split(',').length} items</td>
+                    <td>
+                        <button class="action-btn view-btn" data-id="${supplier.id}"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn edit-btn" data-id="${supplier.id}"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn delete-btn" data-id="${supplier.id}"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const supplierId = this.getAttribute('data-id');
+                    showSupplierDetails(supplierId);
+                    openModal('viewSupplierModal');
+                });
+            });
+            
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const supplierId = this.getAttribute('data-id');
+                    alert(`Edit functionality for ${supplierId} would be implemented here`);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const supplierId = this.getAttribute('data-id');
+                    if (confirm(`Are you sure you want to delete supplier ${supplierId}?`)) {
+                        // Remove supplier from array
+                        suppliers = suppliers.filter(sup => sup.id !== supplierId);
+                        
+                        // Remove supplier orders
+                        delete supplierOrders[supplierId];
+                        
+                        // Reload table and update summary
+                        loadSuppliers();
+                        updateSummaryCards();
+                        
+                        alert('Supplier deleted successfully!');
+                    }
+                });
+            });
+        }
+        
+        // Show supplier details in view modal
+        function showSupplierDetails(supplierId) {
+            const supplier = suppliers.find(sup => sup.id === supplierId);
+            if (!supplier) return;
+            
+            document.getElementById('view-supplierId').textContent = supplier.id;
+            document.getElementById('view-supplierName').textContent = supplier.name;
+            document.getElementById('view-supplierCategory').textContent = formatCategory(supplier.category);
+            document.getElementById('view-supplierContact').textContent = supplier.contact;
+            document.getElementById('view-supplierEmail').textContent = supplier.email;
+            document.getElementById('view-supplierAddress').textContent = supplier.address;
+            document.getElementById('view-supplierProducts').textContent = supplier.products || 'Not specified';
+            document.getElementById('view-supplierNotes').textContent = supplier.notes || 'No notes available';
+            
+            // Load supplier orders
+            const ordersBody = document.getElementById('supplierOrdersBody');
+            ordersBody.innerHTML = '';
+            
+            if (supplierOrders[supplierId] && supplierOrders[supplierId].length > 0) {
+                supplierOrders[supplierId].forEach(order => {
+                    const row = document.createElement('div');
+                    row.className = 'orders-row';
+                    row.innerHTML = `
+                        <span>${order.id}</span>
+                        <span>${order.date}</span>
+                        <span>${order.items}</span>
+                        <span>${order.amount}</span>
+                        <span class="status ${order.status}">${formatStatus(order.status)}</span>
+                    `;
+                    ordersBody.appendChild(row);
+                });
+            } else {
+                const row = document.createElement('div');
+                row.className = 'orders-row';
+                row.innerHTML = '<span colspan="5">No recent orders found</span>';
+                ordersBody.appendChild(row);
+            }
+        }
+        
+        // Update summary cards
+        function updateSummaryCards() {
+            const total = suppliers.length;
+            const pharma = suppliers.filter(sup => sup.category === 'pharmaceutical').length;
+            const equipment = suppliers.filter(sup => sup.category === 'equipment').length;
+            const ayurvedic = suppliers.filter(sup => sup.category === 'ayurvedic').length;
+            
+            document.getElementById('totalSuppliers').textContent = total;
+            document.getElementById('pharmaSuppliers').textContent = pharma;
+            document.getElementById('equipmentSuppliers').textContent = equipment;
+            document.getElementById('ayurvedicSuppliers').textContent = ayurvedic;
+        }
+        
+        // Format category for display
+        function formatCategory(category) {
+            const categories = {
+                'pharmaceutical': 'Pharmaceutical',
+                'equipment': 'Medical Equipment',
+                'generic': 'Generic Medicines',
+                'ayurvedic': 'Ayurvedic',
+                'other': 'Other'
+            };
+            return categories[category] || category;
+        }
+        
+        // Format status for display
+        function formatStatus(status) {
+            return status.charAt(0).toUpperCase() + status.slice(1);
+        }
+        
+        // Apply filters to the table
+        function applyFilters() {
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            
+            // Get DataTable instance
+            const table = $('#suppliersTable').DataTable();
+            
+            // Reset search
+            table.search('').draw();
+            
+            // Apply category filter if provided
+            if (categoryFilter) {
+                table.column(2).search(categoryFilter).draw();
+            }
+        }
+        
+        // Reset all filters
+        function resetFilters() {
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('searchSupplier').value = '';
+            
+            // Get DataTable instance
+            const table = $('#suppliersTable').DataTable();
+            
+            // Reset all filters and search
+            table.search('').columns().search('').draw();
+        }
+    </script>
+</body>
+</html>
