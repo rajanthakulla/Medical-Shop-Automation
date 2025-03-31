@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo - MedShop Automation Software</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <h1>MedShop</h1>
+                </div>
+                <div class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="features.html">Features</a></li>
+                    <li><a href="demo.html" class="active">Demo</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                <div class="user-actions">
+                    <a href="login.html" class="btn login-btn">Login</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Demo Hero Section -->
+    <section class="demo-hero">
+        <div class="container">
+            <div class="demo-hero-content">
+                <h1>Interactive Demo</h1>
+                <p>Experience the power of MedShop with our interactive demonstration</p>
+                <div class="demo-buttons">
+                    <a href="#inventory-demo" class="btn primary-btn">Inventory Demo</a>
+                    <a href="#sales-demo" class="btn secondary-btn">Sales Demo</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Navigation -->
+    <section class="demo-nav">
+        <div class="container">
+            <ul class="demo-nav-menu">
+                <li><a href="#inventory-demo" class="active"><i class="fas fa-pills"></i> Inventory</a></li>
+                <li><a href="#sales-demo"><i class="fas fa-cash-register"></i> Sales</a></li>
+                <li><a href="#prescriptions-demo"><i class="fas fa-file-prescription"></i> Prescriptions</a></li>
+                <li><a href="#reports-demo"><i class="fas fa-chart-line"></i> Reports</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Inventory Demo Section -->
+    <section id="inventory-demo" class="demo-section">
+        <div class="container">
+            <h2 class="section-title">Inventory Management Demo</h2>
+            
+            <div class="demo-container">
+                <div class="demo-sidebar">
+                    <h3>Inventory Actions</h3>
+                    <ul class="demo-actions">
+                        <li><a href="#" class="active" data-tab="view-inventory"><i class="fas fa-list"></i> View Inventory</a></li>
+                        <li><a href="#" data-tab="add-medicine"><i class="fas fa-plus"></i> Add Medicine</a></li>
+                        <li><a href="#" data-tab="low-stock"><i class="fas fa-exclamation-triangle"></i> Low Stock</a></li>
+                        <li><a href="#" data-tab="expiring"><i class="fas fa-clock"></i> Expiring Soon</a></li>
+                    </ul>
+                    
+                    <div class="demo-stats">
+                        <h3>Inventory Summary</h3>
+                        <div class="stat-card">
+                            <i class="fas fa-pills"></i>
+                            <div>
+                                <span class="stat-value">1,245</span>
+                                <span class="stat-label">Total Items</span>
+                            </div>
+                        </div>
+                        <div class="stat-card warning">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <div>
+                                <span class="stat-value">42</span>
+                                <span class="stat-label">Low Stock</span>
+                            </div>
+                        </div>
+                        <div class="stat-card danger">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <span class="stat-value">18</span>
+                                <span class="stat-label">Expiring Soon</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="demo-content">
+                    <div class="demo-tab active" id="view-inventory">
+                        <div class="demo-table-container">
+                            <div class="demo-table-header">
+                                <h3>Medicine Inventory</h3>
+                                <div class="search-box">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" placeholder="Search medicines...">
+                                </div>
+                            </div>
+                            <table class="demo-table">
+                                <thead>
+                                    <tr>
+                                        <th>Medicine Name</th>
+                                        <th>Category</th>
+                                        <th>Batch No.</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Expiry Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Paracetamol 500mg</td>
+                                        <td>Pain Relief</td>
+                                        <td>PC2023001</td>
+                                        <td>125</td>
+                                        <td>₹5.00</td>
+                                        <td>15/12/2024</td>
+                                        <td><span class="status in-stock">In Stock</span></td>
+                                        <td>
+                                            <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                            <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Amoxicillin 250mg</td>
+                                        <td>Antibiotic</td>
+                                        <td>AM2023005</td>
+                                        <td>32</td>
+                                        <td>₹12.50</td>
+                                        <td>30/09/2023</td>
+                                        <td><span class="status expiring">Expiring</span></td>
+                                        <td>
+                                            <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                            <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cetirizine 10mg</td>
+                                        <td>Allergy</td>
+                                        <td>CT2023012</td>
+                                        <td>8</td>
+                                        <td>₹8.75</td>
+                                        <td>28/02/2025</td>
+                                        <td><span class="status low-stock">Low Stock</span></td>
+                                        <td>
+                                            <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                            <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Omeprazole 20mg</td>
+                                        <td>Antacid</td>
+                                        <td>OM2023018</td>
+                                        <td>56</td>
+                                        <td>₹15.20</td>
+                                        <td>15/11/2024</td>
+                                        <td><span class="status in-stock">In Stock</span></td>
+                                        <td>
+                                            <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                            <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Atorvastatin 10mg</td>
+                                        <td>Cholesterol</td>
+                                        <td>AT2023022</td>
+                                        <td>24</td>
+                                        <td>₹22.50</td>
+                                        <td>30/06/2023</td>
+                                        <td><span class="status expiring">Expiring</span></td>
+                                        <td>
+                                            <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                            <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="demo-table-footer">
+                                <div class="pagination">
+                                    <button class="pagination-btn"><i class="fas fa-chevron-left"></i></button>
+                                    <span class="page-number">1</span>
+                                    <button class="pagination-btn"><i class="fas fa-chevron-right"></i></button>
+                                </div>
+                                <div class="records-count">Showing 1 to 5 of 25 records</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="demo-tab" id="add-medicine">
+                        <div class="demo-form-container">
+                            <h3>Add New Medicine</h3>
+                            <form class="demo-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="medicine-name">Medicine Name</label>
+                                        <input type="text" id="medicine-name" placeholder="Enter medicine name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="medicine-category">Category</label>
+                                        <select id="medicine-category" required>
+                                            <option value="">Select category</option>
+                                            <option value="pain-relief">Pain Relief</option>
+                                            <option value="antibiotic">Antibiotic</option>
+                                            <option value="allergy">Allergy</option>
+                                            <option value="antacid">Antacid</option>
+                                            <option value="cholesterol">Cholesterol</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="batch-number">Batch Number</label>
+                                        <input type="text" id="batch-number" placeholder="Enter batch number" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="quantity">Quantity</label>
+                                        <input type="number" id="quantity" placeholder="Enter quantity" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="price">Price (₹)</label>
+                                        <input type="number" step="0.01" id="price" placeholder="Enter price" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="expiry-date">Expiry Date</label>
+                                        <input type="date" id="expiry-date" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea id="description" placeholder="Enter description (optional)"></textarea>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button type="button" class="btn secondary-btn">Cancel</button>
+                                    <button type="submit" class="btn primary-btn">Add Medicine</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="demo-tab" id="low-stock">
+                        <div class="demo-alert-container">
+                            <h3>Low Stock Medicines</h3>
+                            <div class="alert-list">
+                                <div class="alert-item">
+                                    <div class="alert-icon">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="alert-content">
+                                        <h4>Cetirizine 10mg</h4>
+                                        <p>Only 8 units remaining (minimum stock: 15)</p>
+                                        <div class="alert-actions">
+                                            <button class="btn small-btn">Reorder</button>
+                                            <button class="btn small-btn secondary-btn">View Details</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert-item">
+                                    <div class="alert-icon">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="alert-content">
+                                        <h4>Loratadine 10mg</h4>
+                                        <p>Only 5 units remaining (minimum stock: 10)</p>
+                                        <div class="alert-actions">
+                                            <button class="btn small-btn">Reorder</button>
+                                            <button class="btn small-btn secondary-btn">View Details</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert-item">
+                                    <div class="alert-icon">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="alert-content">
+                                        <h4>Ibuprofen 400mg</h4>
+                                        <p>Only 12 units remaining (minimum stock: 20)</p>
+                                        <div class="alert-actions">
+                                            <button class="btn small-btn">Reorder</button>
+                                            <button class="btn small-btn secondary-btn">View Details</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="demo-tab" id="expiring">
+                        <div class="demo-alert-container">
+                            <h3>Expiring Soon Medicines</h3>
+                            <div class="alert-list">
+                                <div class="alert-item">
+                                    <div class="alert-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="alert-content">
+                                        <h4>Amoxicillin 250mg</h4>
+                                        <p>Expires on 30/09/2023 (32 units)</p>
+                                        <div class="alert-actions">
+                                            <button class="btn small-btn">Move to Front</button>
+                                            <button class="btn small-btn secondary-btn">View Details</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert-item">
+                                    <div class="alert-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="alert-content">
+                                        <h4>Atorvastatin 10mg</h4>
+                                        <p>Expires on 30/06/2023 (24 units)</p>
+                                        <div class="alert-actions">
+                                            <button class="btn small-btn">Move to Front</button>
+                                            <button class="btn small-btn secondary-btn">View Details</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sales Demo Section -->
+    <section id="sales-demo" class="demo-section">
+        <div class="container">
+            <h2 class="section-title">Sales Processing Demo</h2>
+            
+            <div class="sales-demo-container">
+                <div class="sales-customer-info">
+                    <h3>Customer Information</h3>
+                    <div class="customer-form">
+                        <div class="form-group">
+                            <label for="customer-name">Customer Name</label>
+                            <input type="text" id="customer-name" placeholder="Enter customer name">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-phone">Phone Number</label>
+                            <input type="tel" id="customer-phone" placeholder="Enter phone number">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-prescription">Prescription (Optional)</label>
+                            <input type="file" id="customer-prescription">
+                        </div>
+                    </div>
+                    
+                    <div class="customer-history">
+                        <h4>Purchase History</h4>
+                        <div class="history-item">
+                            <div class="history-date">15/06/2023</div>
+                            <div class="history-amount">₹425.50</div>
+                            <div class="history-items">5 items</div>
+                        </div>
+                        <div class="history-item">
+                            <div class="history-date">02/05/2023</div>
+                            <div class="history-amount">₹320.75</div>
+                            <div class="history-items">3 items</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sales-transaction">
+                    <div class="sales-items">
+                        <div class="sales-search">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search medicines...">
+                            </div>
+                        </div>
+                        
+                        <div class="items-list">
+                            <div class="item-card">
+                                <div class="item-info">
+                                    <h4>Paracetamol 500mg</h4>
+                                    <p>Pain Relief | ₹5.00</p>
+                                </div>
+                                <div class="item-actions">
+                                    <button class="btn small-btn">Add</button>
+                                </div>
+                            </div>
+                            <div class="item-card">
+                                <div class="item-info">
+                                    <h4>Cetirizine 10mg</h4>
+                                    <p>Allergy | ₹8.75</p>
+                                </div>
+                                <div class="item-actions">
+                                    <button class="btn small-btn">Add</button>
+                                </div>
+                            </div>
+                            <div class="item-card">
+                                <div class="item-info">
+                                    <h4>Omeprazole 20mg</h4>
+                                    <p>Antacid | ₹15.20</p>
+                                </div>
+                                <div class="item-actions">
+                                    <button class="btn small-btn">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sales-cart">
+                        <h3>Current Sale</h3>
+                        <div class="cart-items">
+                            <div class="cart-item">
+                                <div class="item-name">Paracetamol 500mg</div>
+                                <div class="item-qty">
+                                    <button class="qty-btn">-</button>
+                                    <span>2</span>
+                                    <button class="qty-btn">+</button>
+                                </div>
+                                <div class="item-price">₹10.00</div>
+                                <button class="remove-btn"><i class="fas fa-times"></i></button>
+                            </div>
+                            <div class="cart-item">
+                                <div class="item-name">Omeprazole 20mg</div>
+                                <div class="item-qty">
+                                    <button class="qty-btn">-</button>
+                                    <span>1</span>
+                                    <button class="qty-btn">+</button>
+                                </div>
+                                <div class="item-price">₹15.20</div>
+                                <button class="remove-btn"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="cart-summary">
+                            <div class="summary-row">
+                                <span>Subtotal:</span>
+                                <span>₹25.20</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Tax (5%):</span>
+                                <span>₹1.26</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total:</span>
+                                <span>₹26.46</span>
+                            </div>
+                        </div>
+                        
+                        <div class="cart-actions">
+                            <button class="btn secondary-btn">Clear</button>
+                            <button class="btn primary-btn">Process Sale</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prescriptions Demo Section -->
+    <section id="prescriptions-demo" class="demo-section">
+        <div class="container">
+            <h2 class="section-title">Prescriptions Management Demo</h2>
+            
+            <div class="prescriptions-demo-container">
+                <div class="prescriptions-list">
+                    <div class="prescription-card">
+                        <div class="prescription-header">
+                            <h3>Dr. Sharma</h3>
+                            <span class="status pending">Pending</span>
+                        </div>
+                        <div class="prescription-details">
+                            <p><strong>Patient:</strong> Rajesh Kumar</p>
+                            <p><strong>Date:</strong> 15/06/2023</p>
+                            <p><strong>Items:</strong> 3 medicines</p>
+                        </div>
+                        <div class="prescription-actions">
+                            <button class="btn small-btn">View</button>
+                            <button class="btn small-btn primary-btn">Process</button>
+                        </div>
+                    </div>
+                    
+                    <div class="prescription-card">
+                        <div class="prescription-header">
+                            <h3>Dr. Patel</h3>
+                            <span class="status filled">Filled</span>
+                        </div>
+                        <div class="prescription-details">
+                            <p><strong>Patient:</strong> Meena Sharma</p>
+                            <p><strong>Date:</strong> 14/06/2023</p>
+                            <p><strong>Items:</strong> 2 medicines</p>
+                        </div>
+                        <div class="prescription-actions">
+                            <button class="btn small-btn">View</button>
+                            <button class="btn small-btn secondary-btn">Reissue</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="prescription-detail">
+                    <div class="prescription-view">
+                        <div class="prescription-header">
+                            <h3>Prescription #PR20230615</h3>
+                            <span class="status pending">Pending</span>
+                        </div>
+                        
+                        <div class="prescription-info">
+                            <div class="info-row">
+                                <span class="info-label">Doctor:</span>
+                                <span class="info-value">Dr. Sharma (MBBS, MD)</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Patient:</span>
+                                <span class="info-value">Rajesh Kumar (35 years)</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Date:</span>
+                                <span class="info-value">15/06/2023</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Diagnosis:</span>
+                                <span class="info-value">Fever with body ache</span>
+                            </div>
+                        </div>
+                        
+                        <div class="prescription-items">
+                            <h4>Prescribed Medicines</h4>
+                            <table class="items-table">
+                                <thead>
+                                    <tr>
+                                        <th>Medicine</th>
+                                        <th>Dosage</th>
+                                        <th>Duration</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Paracetamol 500mg</td>
+                                        <td>1 tablet every 6 hours</td>
+                                        <td>3 days</td>
+                                        <td>After food</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cetirizine 10mg</td>
+                                        <td>1 tablet at night</td>
+                                        <td>5 days</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Amoxicillin 250mg</td>
+                                        <td>1 tablet twice daily</td>
+                                        <td>7 days</td>
+                                        <td>Complete course</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="prescription-notes">
+                            <h4>Doctor's Notes</h4>
+                            <p>Patient advised to take rest and drink plenty of fluids. Follow up if symptoms persist after 3 days.</p>
+                        </div>
+                        
+                        <div class="prescription-actions">
+                            <button class="btn secondary-btn">Back</button>
+                            <button class="btn primary-btn">Process Prescription</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reports Demo Section -->
+    <section id="reports-demo" class="demo-section">
+        <div class="container">
+            <h2 class="section-title">Reports & Analytics Demo</h2>
+            
+            <div class="reports-filters">
+                <div class="filter-group">
+                    <label for="report-type">Report Type</label>
+                    <select id="report-type">
+                        <option value="sales">Sales Report</option>
+                        <option value="inventory">Inventory Report</option>
+                        <option value="expiry">Expiry Report</option>
+                        <option value="profit">Profit Analysis</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="date-range">Date Range</label>
+                    <select id="date-range">
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month" selected>This Month</option>
+                        <option value="quarter">This Quarter</option>
+                        <option value="year">This Year</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="category">Category</label>
+                    <select id="category">
+                        <option value="">All Categories</option>
+                        <option value="pain-relief">Pain Relief</option>
+                        <option value="antibiotic">Antibiotic</option>
+                        <option value="allergy">Allergy</option>
+                        <option value="antacid">Antacid</option>
+                    </select>
+                </div>
+                
+                <button class="btn primary-btn">Generate Report</button>
+            </div>
+            
+            <div class="reports-container">
+                <div class="report-summary">
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <div class="summary-content">
+                            <h3>Total Sales</h3>
+                            <div class="count">₹24,568</div>
+                            <div class="summary-change positive">
+                                <i class="fas fa-arrow-up"></i> 12% from last month
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <div class="summary-content">
+                            <h3>Items Sold</h3>
+                            <div class="count">1,245</div>
+                            <div class="summary-change positive">
+                                <i class="fas fa-arrow-up"></i> 8% from last month
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="summary-content">
+                            <h3>Customers</h3>
+                            <div class="count">342</div>
+                            <div class="summary-change positive">
+                                <i class="fas fa-arrow-up"></i> 5% from last month
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-file-prescription"></i>
+                        </div>
+                        <div class="summary-content">
+                            <h3>Prescriptions</h3>
+                            <div class="count">156</div>
+                            <div class="summary-change negative">
+                                <i class="fas fa-arrow-down"></i> 3% from last month
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="report-charts">
+                    <div class="chart-card">
+                        <h3>Monthly Sales Trend</h3>
+                        <div class="chart-placeholder">
+                            <img src="/api/placeholder/600/300" alt="Sales Chart">
+                        </div>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <h3>Top Selling Categories</h3>
+                        <div class="chart-placeholder">
+                            <img src="/api/placeholder/600/300" alt="Categories Chart">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="report-table">
+                    <h3>Detailed Sales Report</h3>
+                    <div class="table-container">
+                        <table class="demo-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Invoice No.</th>
+                                    <th>Customer</th>
+                                    <th>Items</th>
+                                    <th>Amount</th>
+                                    <th>Payment</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>15/06/2023</td>
+                                    <td>INV20230615</td>
+                                    <td>Rajesh Kumar</td>
+                                    <td>3</td>
+                                    <td>₹425.50</td>
+                                    <td>Cash</td>
+                                </tr>
+                                <tr>
+                                    <td>14/06/2023</td>
+                                    <td>INV20230614</td>
+                                    <td>Meena Sharma</td>
+                                    <td>2</td>
+                                    <td>₹320.75</td>
+                                    <td>Card</td>
+                                </tr>
+                                <tr>
+                                    <td>12/06/2023</td>
+                                    <td>INV20230612</td>
+                                    <td>Amit Patel</td>
+                                    <td>5</td>
+                                    <td>₹780.20</td>
+                                    <td>UPI</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo CTA Section -->
+    <section class="demo-cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to experience the full power of MedShop?</h2>
+                <p>Sign up for a free trial or schedule a personalized demo with our team.</p>
+                <div class="cta-buttons">
+                    <a href="register.html" class="btn primary-btn">Start Free Trial</a>
+                    <a href="contact.html" class="btn secondary-btn">Request Demo</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>MedShop</h3>
+                    <p>Advanced Medical Shop Automation Software designed to streamline pharmacy operations and enhance customer service.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="features.html">Features</a></li>
+                        <li><a href="demo.html">Demo</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> NIT Rourkela, Odisha, India</p>
+                    <p><i class="fas fa-phone"></i> +91 1234567890</p>
+                    <p><i class="fas fa-envelope"></i> info@medshop.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Medical Shop Automation Software. All rights reserved.</p>
+                <p>Developed by NIT Rourkela Team</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-menu').classList.toggle('active');
+        });
+
+        // Demo navigation tabs
+        const demoNavLinks = document.querySelectorAll('.demo-nav-menu a');
+        demoNavLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                demoNavLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Scroll to section
+                const targetId = this.getAttribute('href');
+                document.querySelector(targetId).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Inventory demo tabs
+        const inventoryTabs = document.querySelectorAll('.demo-actions a');
+        const tabContents = document.querySelectorAll('.demo-tab');
+        
+        inventoryTabs.forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                inventoryTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                const tabId = this.getAttribute('data-tab');
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === tabId) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Quantity buttons in sales demo
+        const qtyButtons = document.querySelectorAll('.qty-btn');
+        qtyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const span = this.parentElement.querySelector('span');
+                let qty = parseInt(span.textContent);
+                
+                if (this.textContent === '+' && qty < 99) {
+                    qty++;
+                } else if (this.textContent === '-' && qty > 1) {
+                    qty--;
+                }
+                
+                span.textContent = qty;
+                updateCartTotal();
+            });
+        });
+
+        function updateCartTotal() {
+            // This would calculate totals in a real implementation
+            console.log('Cart updated');
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
