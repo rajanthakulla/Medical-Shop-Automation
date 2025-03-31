@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Medical Shop Automation Software</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <h1>MedShop</h1>
+                </div>
+                <div class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="inventory.html">Inventory</a></li>
+                    <li><a href="sales.html">Sales</a></li>
+                    <li><a href="prescriptions.html">Prescriptions</a></li>
+                    <li><a href="suppliers.html">Suppliers</a></li>
+                    <li><a href="reports.html" class="active">Reports</a></li>
+                </ul>
+                <div class="user-actions">
+                    <div class="user-profile">
+                        <img src="/api/placeholder/40/40" alt="User Profile">
+                        <span>Admin</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="reports-main">
+        <div class="container">
+            <div class="reports-header">
+                <h2><i class="fas fa-chart-line"></i> Reports & Analytics</h2>
+                <div class="reports-actions">
+                    <button class="btn primary-btn" id="generateReportBtn">
+                        <i class="fas fa-file-export"></i> Generate Report
+                    </button>
+                </div>
+            </div>
+
+            <!-- Reports Filters -->
+            <div class="reports-filters">
+                <div class="filter-group">
+                    <label for="reportType">Report Type</label>
+                    <select id="reportType">
+                        <option value="sales">Sales Report</option>
+                        <option value="inventory">Inventory Report</option>
+                        <option value="expiry">Expiry Report</option>
+                        <option value="profit">Profit & Loss</option>
+                        <option value="customer">Customer Report</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="dateRange">Date Range</label>
+                    <input type="text" id="dateRange" placeholder="Select date range">
+                </div>
+                <div class="filter-group">
+                    <label for="categoryFilter">Category</label>
+                    <select id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="antibiotics">Antibiotics</option>
+                        <option value="painkillers">Painkillers</option>
+                        <option value="vitamins">Vitamins</option>
+                        <option value="supplements">Supplements</option>
+                    </select>
+                </div>
+                <button class="btn primary-btn" id="applyFiltersBtn">Apply Filters</button>
+                <button class="btn secondary-btn" id="resetFiltersBtn">Reset</button>
+            </div>
+
+            <!-- Reports Summary Cards -->
+            <div class="reports-summary">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-rupee-sign"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Total Revenue</h3>
+                        <p class="count" id="totalRevenue">₹0.00</p>
+                        <p class="subtext">Current Period</p>
+                    </div>
+                </div>
+                <div class="summary-card success">
+                    <div class="summary-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Total Sales</h3>
+                        <p class="count" id="totalSales">0</p>
+                        <p class="subtext">Current Period</p>
+                    </div>
+                </div>
+                <div class="summary-card primary">
+                    <div class="summary-icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Top Selling</h3>
+                        <p class="count" id="topSelling">-</p>
+                        <p class="subtext">Current Period</p>
+                    </div>
+                </div>
+                <div class="summary-card warning">
+                    <div class="summary-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Expiring Soon</h3>
+                        <p class="count" id="expiringSoon">0</p>
+                        <p class="subtext">Next 30 days</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3>Sales Trend</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>Revenue by Category</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Table -->
+            <div class="reports-table-container">
+                <table id="reportsTable" class="display">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Invoice No.</th>
+                            <th>Customer</th>
+                            <th>Items</th>
+                            <th>Amount (₹)</th>
+                            <th>Profit (₹)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportsTableBody">
+                        <!-- Data will be loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Generate Report Modal -->
+    <div class="modal" id="generateReportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Generate Report</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="reportForm">
+                    <div class="form-group">
+                        <label for="reportTypeSelect">Report Type</label>
+                        <select id="reportTypeSelect" required>
+                            <option value="">Select Report Type</option>
+                            <option value="sales">Sales Report</option>
+                            <option value="inventory">Inventory Report</option>
+                            <option value="expiry">Expiry Report</option>
+                            <option value="profit">Profit & Loss</option>
+                            <option value="customer">Customer Report</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="reportStartDate">Start Date</label>
+                            <input type="date" id="reportStartDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportEndDate">End Date</label>
+                            <input type="date" id="reportEndDate" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reportFormat">Format</label>
+                        <select id="reportFormat" required>
+                            <option value="pdf">PDF</option>
+                            <option value="excel">Excel</option>
+                            <option value="csv">CSV</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="includeDetails">Include Details</label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="includeDetails" checked>
+                            <label for="includeDetails">Include item-level details</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn secondary-btn close-modal">Cancel</button>
+                        <button type="submit" class="btn primary-btn">Generate Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>MedShop</h3>
+                    <p>Advanced Medical Shop Automation Software designed to streamline pharmacy operations and enhance customer service.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="features.html">Features</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="docs.html">Documentation</a></li>
+                        <li><a href="tutorials.html">Tutorials</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="support.html">Support</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> NIT Rourkela, Odisha, India</p>
+                    <p><i class="fas fa-phone"></i> +91 1234567890</p>
+                    <p><i class="fas fa-envelope"></i> info@medshop.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Medical Shop Automation Software. All rights reserved.</p>
+                <p>Developed by NIT Rourkela Team</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <script>
+        // Sample data for reports
+        const salesData = [
+            {
+                date: "2023-06-15",
+                invoiceNo: "INV-2023-001",
+                customer: "Rahul Sharma",
+                items: [
+                    { name: "Paracetamol 500mg", quantity: 2, price: 5.50, cost: 3.50 },
+                    { name: "Vitamin C 500mg", quantity: 1, price: 7.50, cost: 5.00 }
+                ],
+                amount: 19.43,
+                profit: 4.43,
+                tax: 0.93
+            },
+            {
+                date: "2023-06-16",
+                invoiceNo: "INV-2023-002",
+                customer: "Priya Patel",
+                items: [
+                    { name: "Amoxicillin 250mg", quantity: 1, price: 12.75, cost: 8.50 },
+                    { name: "Omeprazole 20mg", quantity: 1, price: 15.00, cost: 10.00 }
+                ],
+                amount: 29.14,
+                profit: 7.39,
+                tax: 1.39
+            },
+            {
+                date: "2023-06-17",
+                invoiceNo: "INV-2023-003",
+                customer: "Amit Kumar",
+                items: [
+                    { name: "Paracetamol 500mg", quantity: 3, price: 5.50, cost: 3.50 },
+                    { name: "Cetirizine 10mg", quantity: 2, price: 8.25, cost: 5.50 }
+                ],
+                amount: 34.65,
+                profit: 9.65,
+                tax: 1.65
+            },
+            {
+                date: "2023-06-18",
+                invoiceNo: "INV-2023-004",
+                customer: "Neha Gupta",
+                items: [
+                    { name: "Ibuprofen 400mg", quantity: 1, price: 9.50, cost: 6.00 },
+                    { name: "Vitamin B Complex", quantity: 2, price: 12.00, cost: 8.00 }
+                ],
+                amount: 36.33,
+                profit: 10.33,
+                tax: 1.83
+            },
+            {
+                date: "2023-06-19",
+                invoiceNo: "INV-2023-005",
+                customer: "Sanjay Verma",
+                items: [
+                    { name: "Dolo 650mg", quantity: 5, price: 6.00, cost: 4.00 },
+                    { name: "Azithromycin 500mg", quantity: 1, price: 18.50, cost: 12.00 }
+                ],
+                amount: 50.40,
+                profit: 14.40,
+                tax: 2.40
+            }
+        ];
+
+        // Inventory data for reports
+        const inventoryData = [
+            { name: "Paracetamol 500mg", category: "painkillers", stock: 125, expiry: "2024-03-15", cost: 3.50, price: 5.50 },
+            { name: "Amoxicillin 250mg", category: "antibiotics", stock: 42, expiry: "2024-05-20", cost: 8.50, price: 12.75 },
+            { name: "Cetirizine 10mg", category: "allergy", stock: 0, expiry: "2023-12-10", cost: 5.50, price: 8.25 },
+            { name: "Omeprazole 20mg", category: "antacids", stock: 36, expiry: "2024-01-30", cost: 10.00, price: 15.00 },
+            { name: "Vitamin C 500mg", category: "vitamins", stock: 89, expiry: "2024-06-15", cost: 5.00, price: 7.50 },
+            { name: "Ibuprofen 400mg", category: "painkillers", stock: 72, expiry: "2024-04-22", cost: 6.00, price: 9.50 },
+            { name: "Vitamin B Complex", category: "vitamins", stock: 55, expiry: "2024-07-18", cost: 8.00, price: 12.00 },
+            { name: "Dolo 650mg", category: "painkillers", stock: 120, expiry: "2024-02-28", cost: 4.00, price: 6.00 },
+            { name: "Azithromycin 500mg", category: "antibiotics", stock: 28, expiry: "2023-11-15", cost: 12.00, price: 18.50 }
+        ];
+
+        // Initialize date range picker
+        flatpickr("#dateRange", {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            defaultDate: [new Date(new Date().setDate(new Date().getDate() - 30)), new Date()]
+        });
+
+        // Initialize charts
+        let salesChart, categoryChart;
+
+        // Initialize DataTable and load data
+        $(document).ready(function() {
+            // Load sales data into table
+            loadReportsData();
+            
+            // Initialize DataTable with export buttons
+            const table = $('#reportsTable').DataTable({
+                responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                order: [[0, 'desc']] // Sort by date descending
+            });
+            
+            // Update summary cards
+            updateSummaryCards();
+            
+            // Initialize charts
+            initCharts();
+            
+            // Modal functionality
+            const openModal = (modalId) => {
+                document.getElementById(modalId).style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            };
+            
+            const closeModal = (modalId) => {
+                document.getElementById(modalId).style.display = 'none';
+                document.body.style.overflow = 'auto';
+            };
+            
+            // Event listeners for modals
+            document.getElementById('generateReportBtn').addEventListener('click', () => {
+                openModal('generateReportModal');
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    closeModal(event.target.id);
+                }
+            });
+            
+            // Form submission for report generation
+            document.getElementById('reportForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const reportType = document.getElementById('reportTypeSelect').value;
+                const startDate = document.getElementById('reportStartDate').value;
+                const endDate = document.getElementById('reportEndDate').value;
+                const format = document.getElementById('reportFormat').value;
+                const includeDetails = document.getElementById('includeDetails').checked;
+                
+                // In a real app, this would generate and download the report
+                alert(`Generating ${reportType} report from ${startDate} to ${endDate} in ${format} format ${includeDetails ? 'with' : 'without'} details.`);
+                
+                closeModal('generateReportModal');
+            });
+            
+            // Apply filters
+            document.getElementById('applyFiltersBtn').addEventListener('click', applyFilters);
+            
+            // Reset filters
+            document.getElementById('resetFiltersBtn').addEventListener('click', resetFilters);
+            
+            // Report type change
+            document.getElementById('reportType').addEventListener('change', function() {
+                updateReportType(this.value);
+            });
+            
+            // Mobile menu toggle
+            document.querySelector('.menu-toggle').addEventListener('click', function() {
+                document.querySelector('.nav-menu').classList.toggle('active');
+            });
+            
+            // Close modal buttons
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal.id);
+                });
+            });
+        });
+        
+        // Initialize charts
+        function initCharts() {
+            const salesCtx = document.getElementById('salesChart').getContext('2d');
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            
+            // Sample data for charts
+            const dates = ['Jun 1', 'Jun 5', 'Jun 10', 'Jun 15', 'Jun 20', 'Jun 25', 'Jun 30'];
+            const salesValues = [1200, 1900, 1500, 2000, 1800, 2200, 2500];
+            const categories = ['Painkillers', 'Antibiotics', 'Vitamins', 'Antacids', 'Other'];
+            const categoryValues = [3500, 2800, 2200, 1800, 1200];
+            
+            // Sales Chart
+            salesChart = new Chart(salesCtx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Sales (₹)',
+                        data: salesValues,
+                        backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Category Chart
+            categoryChart = new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        data: categoryValues,
+                        backgroundColor: [
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(46, 204, 113, 0.7)',
+                            'rgba(155, 89, 182, 0.7)',
+                            'rgba(241, 196, 15, 0.7)',
+                            'rgba(231, 76, 60, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(46, 204, 113, 1)',
+                            'rgba(155, 89, 182, 1)',
+                            'rgba(241, 196, 15, 1)',
+                            'rgba(231, 76, 60, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Load reports data into the table
+        function loadReportsData() {
+            const tableBody = document.getElementById('reportsTableBody');
+            tableBody.innerHTML = '';
+            
+            salesData.forEach(sale => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${sale.date}</td>
+                    <td>${sale.invoiceNo}</td>
+                    <td>${sale.customer}</td>
+                    <td>${sale.items.length} items</td>
+                    <td>₹${sale.amount.toFixed(2)}</td>
+                    <td>₹${sale.profit.toFixed(2)}</td>
+                    <td>
+                        <button class="action-btn view-btn" data-invoice="${sale.invoiceNo}"><i class="fas fa-eye"></i></button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const invoiceNo = this.getAttribute('data-invoice');
+                    alert(`View details for ${invoiceNo} would be implemented here`);
+                });
+            });
+        }
+        
+        // Update summary cards
+        function updateSummaryCards() {
+            // Calculate totals
+            const totalRevenue = salesData.reduce((sum, sale) => sum + sale.amount, 0);
+            const totalProfit = salesData.reduce((sum, sale) => sum + sale.profit, 0);
+            
+            // Find top selling item
+            const itemSales = {};
+            salesData.forEach(sale => {
+                sale.items.forEach(item => {
+                    if (itemSales[item.name]) {
+                        itemSales[item.name] += item.quantity;
+                    } else {
+                        itemSales[item.name] = item.quantity;
+                    }
+                });
+            });
+            
+            let topSellingItem = '';
+            let maxQuantity = 0;
+            for (const [item, quantity] of Object.entries(itemSales)) {
+                if (quantity > maxQuantity) {
+                    maxQuantity = quantity;
+                    topSellingItem = item;
+                }
+            }
+            
+            // Count expiring items (next 30 days)
+            const today = new Date();
+            const nextMonth = new Date(today);
+            nextMonth.setDate(today.getDate() + 30);
+            
+            const expiringSoon = inventoryData.filter(item => {
+                const expiryDate = new Date(item.expiry);
+                return expiryDate >= today && expiryDate <= nextMonth;
+            }).length;
+            
+            // Update cards
+            document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toFixed(2)}`;
+            document.getElementById('totalSales').textContent = salesData.length;
+            document.getElementById('topSelling').textContent = topSellingItem || '-';
+            document.getElementById('expiringSoon').textContent = expiringSoon;
+        }
+        
+        // Apply filters to the reports
+        function applyFilters() {
+            const reportType = document.getElementById('reportType').value;
+            const dateRange = document.getElementById('dateRange').value;
+            const category = document.getElementById('categoryFilter').value;
+            
+            // In a real app, this would filter the data and update the table and charts
+            alert(`Applying filters: Report Type=${reportType}, Date Range=${dateRange}, Category=${category}`);
+            
+            // For demo purposes, we'll just reload the data
+            loadReportsData();
+        }
+        
+        // Reset all filters
+        function resetFilters() {
+            document.getElementById('reportType').value = 'sales';
+            document.getElementById('dateRange').value = '';
+            document.getElementById('categoryFilter').value = '';
+            
+            // Reset to default view
+            loadReportsData();
+        }
+        
+        // Update UI based on report type
+        function updateReportType(type) {
+            // In a real app, this would change the table columns and charts based on report type
+            switch(type) {
+                case 'sales':
+                    document.querySelector('.charts-container').style.display = 'grid';
+                    break;
+                case 'inventory':
+                    document.querySelector('.charts-container').style.display = 'none';
+                    break;
+                case 'expiry':
+                    document.querySelector('.charts-container').style.display = 'none';
+                    break;
+                case 'profit':
+                    document.querySelector('.charts-container').style.display = 'grid';
+                    break;
+                case 'customer':
+                    document.querySelector('.charts-container').style.display = 'none';
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
